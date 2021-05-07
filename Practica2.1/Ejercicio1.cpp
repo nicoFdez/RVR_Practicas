@@ -27,7 +27,7 @@ int main(int argc, char **argv){
     struct addrinfo* it;
     for(it = result; it != NULL; it = it->ai_next){
         char host[NI_MAXHOST];
-        char serv[NI_MAXHOST];
+        char serv[NI_MAXSERV];
 
         getnameinfo(it->ai_addr, it->ai_addrlen, host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICHOST);
 
@@ -36,4 +36,6 @@ int main(int argc, char **argv){
     }
 
     freeaddrinfo(result);
+
+    return 0;
 }
