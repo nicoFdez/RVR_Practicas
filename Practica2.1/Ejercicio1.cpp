@@ -16,7 +16,6 @@ int main(int argc, char **argv){
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
-    hints.ai_socktype = SOCK_STREAM;
 
     int e = getaddrinfo(argv[1], NULL, &hints, &result);
 
@@ -26,14 +25,14 @@ int main(int argc, char **argv){
     }
 
     struct addrinfo* it;
-    for(it = result; it !=NULL; it = it->ai_next){
+    for(it = result; it != NULL; it = it->ai_next){
         char host[NI_MAXHOST];
         char serv[NI_MAXHOST];
 
-        getnameinfo( it->ai_addr, it->ai_addrlen, host, NI_MAXHOST, serv, NI_MAXHOST,
-            NI_NUMERICHOST | NI_NUMERICSERV);
+        getnameinfo(it->ai_addr, it->ai_addrlen, host, NI_MAXHOST, serv, NI_MAXSERV, NI_NUMERICHOST);
 
-        std::cout << "Host: "  << host << "\n";
+        std::cout << "Host: "  << host << "    Family: "  << it->ai_family
+            << "    SocketType: "  << it->ai_socktype << "\n";
     }
 
     freeaddrinfo(result);
