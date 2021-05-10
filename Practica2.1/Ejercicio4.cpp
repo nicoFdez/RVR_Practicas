@@ -58,7 +58,7 @@ int main(int argc, char **argv){
             break;
         }
         buff[recvBytes] = '\0';
-        std::cout << "\t"  << buff;
+        //std::cout << "\t"  << buff;
         send(sock_client, buff, recvBytes, 0);
     }
 
