@@ -63,6 +63,7 @@ int main(int argc, char **argv){
     }
 
     close(sock);
+    close(sock_client);
 
     return 0;
 }
