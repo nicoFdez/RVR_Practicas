@@ -38,16 +38,15 @@ public:
             std::cout << "Host: "  << host << "    Port: "  << serv << "\n";
             std::cout << "\t["  << std::this_thread::get_id() << "] Data: "  << buff << "\n";
 
-            sleep(5);
+            sleep(10);
 
-            int sendBytes = sendto(_sd, buff, buff_size, 0, &client, client_l);
+            int sendBytes = sendto(_sd, buff, recvBytes, 0, &client, client_l);
             if(sendBytes == -1){
                 std::cerr << "Error sending\n";
                 return;
             }
         }   
     }
-
 private:
     int _sd;
 };
