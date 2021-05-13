@@ -77,11 +77,8 @@ int main(int argc, char **argv){
         std::cout << "Conexión desde host: "  << host << "   puerto: "  << serv << "\n";
 
         //Creacion del thread
-        MessageThread *mt = new MessageThread(sock_client);
-
-        std::thread([&mt](){
-            mt->procesaMensaje();
-            delete mt;
+        std::thread([sock_client](){
+            MessageThread(sock_client).procesaMensaje();
         }).detach();
     }
 
