@@ -9,7 +9,6 @@
 int main(int argc, char **argv){
     
     struct addrinfo hints;
-    struct addrinfo* client_result;
     struct addrinfo* server_result;
 
     if (argc != 4){
@@ -27,22 +26,11 @@ int main(int argc, char **argv){
         return -1;
     }
 
-    char* client_addr = "127.0.0.1";
-    char* client_serv = "7778";
-
-    e = getaddrinfo( client_addr, client_serv, &hints, &client_result);
-    if(e != 0){
-        std::cerr << gai_strerror(e) << "\n";
-        return -1;
-    }
-
     int sock = socket(server_result->ai_family, server_result->ai_socktype, 0);
     if(sock == -1){
         std::cerr << "Error creating socket" << "\n";
         return -1;
     }
-
-    bind(sock, client_result->ai_addr, client_result->ai_addrlen);
 
     int buff_size = 80;
     char buff[buff_size];
@@ -66,7 +54,6 @@ int main(int argc, char **argv){
         std::cout << buff << "\n";
     }
 
-    freeaddrinfo(client_result);
     freeaddrinfo(server_result);
     close(sock);
 
