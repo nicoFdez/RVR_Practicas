@@ -48,10 +48,28 @@ void ChatServer::do_messages()
          * para añadirlo al vector
          */
 
+        Socket* clientSd;
+        ChatMessage msg;
         //Recibir Mensajes en y en función del tipo de mensaje
+        socket.recv(msg, clientSd);
         // - LOGIN: Añadir al vector clients
+        if(msg.type == ChatMessage::LOGIN){
+            std::unique_ptr<Socket> sockPtr(clientSd);
+            clients.push_back(std::unique_ptr<Socket>(std::move(clientSd)));
+        }
         // - LOGOUT: Eliminar del vector clients
+        else if(msg.type == ChatMessage::LOGOUT){
+            auto it = clients.begin();
+            while(it != clients.end() && !(*(*it).get() == *clientSd)) it++;
+            clients.erase(it);
+        }
         // - MESSAGE: Reenviar el mensaje a todos los clientes (menos el emisor)
+        else if(msg.type == ChatMessage::MESSAGE){
+            for(int i=0; i<clients.size(); ++i){
+                if(!(*(clients[i].get()) == *clientSd))
+                    socket.send(msg, (*clients[i].get()));
+            }
+        }
     }
 }
 
@@ -70,7 +88,12 @@ void ChatClient::login()
 
 void ChatClient::logout()
 {
-    // Completar
+    std::string msg;
+
+    ChatMessage em(nick, msg);
+    em.type = ChatMessage::LOGOUT;
+
+    socket.send(em, socket);
 }
 
 void ChatClient::input_thread()
@@ -78,7 +101,11 @@ void ChatClient::input_thread()
     while (true)
     {
         // Leer stdin con std::getline
+        std::string msg;
+        std::getline(std::cin, msg);
+        ChatMessage chatMsg(nick, msg);
         // Enviar al servidor usando socket
+        socket.send(chatMsg, socket);
     }
 }
 
@@ -87,7 +114,10 @@ void ChatClient::net_thread()
     while(true)
     {
         //Recibir Mensajes de red
+        ChatMessage chatMsg;
+        socket.recv(chatMsg);
         //Mostrar en pantalla el mensaje de la forma "nick: mensaje"
+        std::cout << chatMsg.nick << ": " << chatMsg.message << "\n";
     }
 }
 
