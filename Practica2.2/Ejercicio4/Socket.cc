@@ -11,22 +11,22 @@ Socket::Socket(const char * address, const char * port):sd(-1)
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_socktype = SOCK_DGRAM;
 
     int e = getaddrinfo(address, port, &hints, &result);
     if(e != 0){
         std::cerr << gai_strerror(e) << "\n";
-        return;
+        throw("Error socket");
     }
 
     int sock = socket(result->ai_family, result->ai_socktype, 0);
     if(sock == -1){
         std::cerr << "Error creating socket" << "\n";
-        return;
+        throw("Error socket");
     }
     //Con el resultado inicializar los miembros sd, sa y sa_len de la clase
     sd = sock;
-    sa = *result->ai_addr;
+    sa = (*result->ai_addr);
     sa_len = result->ai_addrlen;
 }
 
